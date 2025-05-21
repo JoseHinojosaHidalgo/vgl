@@ -1,5 +1,5 @@
 # Visual Geolocalization from aerial images on NVIDIA Jetson Orin Nano
-This repository allows to run on a PC or on the Orin Visual Geolocalization.
+This repository allows to run on a PC or on the Orin the Visual Geolocalization.
 
 
 ## Table of Contents
@@ -7,6 +7,7 @@ This repository allows to run on a PC or on the Orin Visual Geolocalization.
 - [Visual Geolocalization from aerial images on NVIDIA Jetson Orin Nano](#visual-geolocalization-from-aerial-images-on-nvidia-jetson-orin-nano)
 	- [Table of Contents](#table-of-contents)
 	- [Overview](#overview)
+	- [Requirements](#requirements)
 	- [Usage](#usage)
 	- [ODM](#odm)
 	- [Visual Localization](#visual-localization)
@@ -15,6 +16,10 @@ This repository allows to run on a PC or on the Orin Visual Geolocalization.
 - [License](#license)
 
 ## Overview
+
+This project integrates Open Drone Map and visual geolocalization to enable GPS free localization with images from any altitude. 
+
+ODM is used to compose and orthorectify low altitude iamges into bigger images that can be matched to satellite data, this matching is done using deep learning algorithms like Superpoint and Superglue.
 
 The following figure shows the architecture of the visual localization system. The system is composed of three main components: Key Point Detection and Description, Key Point Matching and Localization. The Key Point Detection and Description component detects and describes key points in both the query image and the satellite images. The Key Point Matching component matches the key points between the query image and the satellite images. The Localization component estimates the pose of the UAV in the satellite geo-referenced database.
 
@@ -28,105 +33,44 @@ In this example, the query image has a sparse set of key points that are matched
  ![sample 02](assets/sample_02.jpg)
 
 
+## Requirements
+
+- Docker
+  
+For Jetson Orin nano:
+- JetPack 6.2
+- jetson-containers
+
 ## Usage
 
-You need to use gitmodules to clone the *superglue_lib* submodule:
+To use the project look over the provided scripts run.sh and run_jetson.sh
+
+In x86
 
 ```bash
-git submodule update --init --recursive
+./run.sh [GSD] [drone_image_dir]
 ```
 
-To install the dependencies, you need to use *poetry*. If you don't have it installed, you can install it using the following command:
+In Jetson Orin Nano
 
 ```bash
-pip install poetry
-```
-
-Then you can install the dependencies using the following command:
-
-```bash
-poetry install
-```
-This will install all the dependencies needed for the project (including the dev, docs and tests dependencies). If you want to install only the dependencies needed for the project, you can use the following command:
-
-```bash
-poetry install --only main
-```
-
-In newer versions of poetry you might need to install the *shell plugin*
-
-```bash
-poetry self add poetry-plugin-shell 
-```
-
-To activate the virtual environment, you can use the following command:
-
-```bash
-poetry shell
-```
-
-To run the main script, you can use the following command:
-
-```bash
-poetry run python scripts/main.py
+./run_jetson.sh [GSD] [drone_image_dir]
 ```
 
 ## ODM
 
+[ODM](https://github.com/OpenDroneMap/ODM)
+
 ## Visual Localization
 
-Before you run your code, you need to have:
-
-1. A satellite geo-referenced database that contains the satellite images, stored in the **data/maps** directory. Feel free to use the provided database or create your own database.
-2. A query image dataset that contains the query images, stored in the **data/query** directory. Feel free to use the provided dataset or create your own dataset.
-3. Make sure that the metadata file of the satellite images and the query images are stored in the **data/maps** and **data/query** directories respectively.
-
-To localize the UAV in the satellite geo-referenced database, you can use the **svl.localization.Pipeline** class to run the full pipeline.
-
-```python
-from svl.localization.pipeline import Pipeline
-
-# create the map reader
-map_reader = SatelliteMapReader(...)
-
-# create the drone streamer
-streamer = DroneStreamer(...)
-
-# create the detector
-superpoint_algorithm = SuperPointAlgorithm(...)
-
-# create the matcher
-superglue_matcher = SuperGlueMatcher(...)
-
-# create the query processor
-query_processor = QueryProcessor(...)
-
-# create the config
-config = Config(...)
-
-# create the logger
-logger = Logger(...)
-
-# create the pipeline
-pipeline = Pipeline(
-    map_reader=map_reader,
-    drone_streamer=streamer,
-    detector=superpoint_algorithm,
-    matcher=superglue_matcher,
-    query_processor=query_processor,
-    config=config,
-    logger=logger,
-)
-
-# run the pipeline
-preds = pipeline.run(output_path="path/to/output/directory")
-metrics = pipeline.compute_metrics(preds)
-```
-
-For a complete example, you can check the **scripts/main.py** script. The script runs the full pipeline on the provided geo-referenced database and query images and saves the results in the **data/output** directory.
-
+[visual_localization](https://github.com/TerboucheHacene/visual_localization)
 
 # Acknowledgments
+
+Original repositories forked for this work:
+- [ODM](https://github.com/OpenDroneMap/ODM)
+- [jetson-containers](https://github.com/dusty-nv/jetson-containers)
+- [visual_localization](https://github.com/TerboucheHacene/visual_localization)
 
 The original implementation of the paper can be found [here](https://github.com/TIERS/wildnav). I would like to thank the authors of the paper for making their code available.
 

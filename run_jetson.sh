@@ -76,7 +76,7 @@ run_vgl() {
   fi
   
   # TODO Add x86 cuda option
-  jetson-containers run --rm -v "$final_dir":/app/data ghcr.io/josehinojosahidalgo/jetson_vgl:1.0_orin poetry run python /app/scripts/main.py
+  jetson-containers run --rm -v "$final_dir":/app/data ghcr.io/josehinojosahidalgo/jetson_vgl:1.0_orin poetry run python /app/scripts/main.py --torch-dev="cuda"
 }
 
 run_odm()  {
