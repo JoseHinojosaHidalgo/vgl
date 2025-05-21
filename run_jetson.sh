@@ -81,11 +81,9 @@ run_vgl() {
 
 run_odm()  {
   echo ""
-  read -p "Use GPU for SIFT extraction? (compatible GPU must be avaliable) [y/n]: " response
-  response=${response,,} # Convert input to lowercase
 
   echo "Running ODM in $DIR1 gpu..."
-  jetson-containers run -ti --rm -v "$(dirname "$2")":/datasets ghcr.io/josehinojosahidalgo/odm_orin:1.0 bash /code/run_odm_orin.sh "$(dirname "$2")" "$1" 8000 16000
+  jetson-containers run -ti --rm -v "$(dirname "$2")":/datasets ghcr.io/josehinojosahidalgo/odm_orin:1.0 bash /code/run_odm_orin.sh "$(basename "$2")" "$1" 8000 16000
 }
 
 # Check the number of arguments
