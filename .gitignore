@@ -1,5 +1,16 @@
 datasets/*
 
+*.png
+*.jpg
+*.mp4
+*.PNG
+*.JPG
+*.MP4
+*.tiff
+*.geotiff
+
+*.csv
+
 # Environments
 .env
 .venv
